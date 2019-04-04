@@ -1,183 +1,157 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>React Calculator FCC</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-    
-    <!-- Don't use this in production: -->
-    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>React Calculator FCC</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+        <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    </head>
 <body>
-        <script type="text/babel">
-class Calculator extends React.Component { 
-    constructor(props){
-        super(props)
-//ako je flag true to znaci da je vec jedna decimala ubacena ili operator
-//dobro rjesenje za zahtjev samo posljednji operator se pika i samo jedna decimala u broju
-        this.state = {
-            currentNumber: "0",
-            operatorFlag: false,
-            decimalFlag: false
-        }
-
-        this.handleClick = this.handleClick.bind(this);
-    }
-        handleClick(buttonName) {
-        let currentNumber = this.state.currentNumber;
-        let operatorFlag = this.state.operatorFlag;
-        let decimalFlag = this.state.decimalFlag;
-   //swithc is true until break
-        switch(true){
-//u slucaju 0123456789 idi kroz if petlju gdje je opcija da li je current number razlicit od 0
-          case  buttonName === "0" ||
-                buttonName === "1" ||
-                buttonName === "2" ||
-                buttonName === "3" ||
-                buttonName === "4" ||
-                buttonName === "5" ||
-                buttonName === "6" ||
-                buttonName === "7" ||
-                buttonName === "8" ||
-                buttonName === "9" :
-                if(this.state.currentNumber != "0"){
-//ako je current number razlicit od nula tada pritisnuto dugme na dodaj na current nuber
-                    currentNumber += buttonName;
-//prebaci operator flag na false da bi omobucio ponovno ubacivanje operatora +-/*
-                    operatorFlag = false;
-                } else {
-//ako je current number 0 tada prebrisi current nuber sa brojem koji je pritisnut
-                    currentNumber = buttonName;
+    <script type="text/babel">
+        class Calculator extends React.Component { 
+            constructor(props){
+                super(props)
+                // if flag is true it means that one decimals are loaded or an operator, this is a good solution for the user story, 
+                // only the last operator is counted and only one decimals in the number
+                this.state = {
+                    currentNumber: "0",
+                    operatorFlag: false,
+                    decimalFlag: false
                 }
-//ako se desio slucaj brojeva ovdje prekini petlju
-                    break;
-//u slucaju +-/* idi kroz if petlju gdje je opcija da li je operator flag false ako jeste tada
-                    case buttonName === "+" ||
-                         buttonName === "-" ||
-                         buttonName === "/" ||
-                         buttonName === "*" :
-                         if(!this.state.operatorFlag){
-//tada dodaj stisnuto dugme na current number
-                             currentNumber += buttonName;
-//prebaci operatorflag na true da se nebi moglo vise operatora dodavati odmah iza postojeceg operatora 
-                             operatorFlag = true;
-                             decimalFlag= false;
-//ako je state operator vec true znaci da je vec ima operator ukucan u tom slucaju 
-                         }else{
-//sa currentNumber skinuti posljednji unos i dodati novi 
-                             const newNumber = currentNumber.slice(0,currentNumber.length-1);
-                             currentNumber = newNumber + buttonName;
-                         }
-                        break;
-                        case buttonName === "C":
-                        currentNumber = "0";
-                        operatorFlag = false;
-                        decimalFlag= false;
-                        break;
-                        case buttonName === "=":
-                        currentNumber = eval(currentNumber);
-                        operatorFlag = false;
-                        decimalFlag= true;
-                        break;
-                        case buttonName === ".":
-                        if(!this.state.decimalFlag){
+
+                this.handleClick = this.handleClick.bind(this);
+            }
+                handleClick(buttonName) {
+                let currentNumber = this.state.currentNumber;
+                let operatorFlag = this.state.operatorFlag;
+                let decimalFlag = this.state.decimalFlag;
+                //swithc is true until break
+                switch(true){
+                //in the cases of 0123456789 go through the loop, condition is current number is not a 0
+                case  buttonName === "0" ||
+                        buttonName === "1" ||
+                        buttonName === "2" ||
+                        buttonName === "3" ||
+                        buttonName === "4" ||
+                        buttonName === "5" ||
+                        buttonName === "6" ||
+                        buttonName === "7" ||
+                        buttonName === "8" ||
+                        buttonName === "9" :
+                        if(this.state.currentNumber != "0"){
+                        //if condition is true add clicked case to current number
                             currentNumber += buttonName;
-                            decimalFlag = true;
+                        //switch operator flag to false to enable re-insertion of operator + - / *
+                            operatorFlag = false;
+                        } else {
+                        //if the current number is 0 then override zero with pressed case
+                            currentNumber = buttonName;
                         }
-                } 
-                this.setState({decimalFlag: decimalFlag});        
-                this.setState({currentNumber:currentNumber});
-                this.setState({operatorFlag: operatorFlag});
+                        break;
+                            //in the case of + - / * check condition of operator flag if true  
+                            case buttonName === "+" ||
+                                buttonName === "-" ||
+                                buttonName === "/" ||
+                                buttonName === "*" :
+                                if(!this.state.operatorFlag){
+                                    //add operator to number
+                                    currentNumber += buttonName;
+                                    //switch operator flag to true to disable re-insertion of operator + - / *
+                                    operatorFlag = true;
+                                    decimalFlag= false;
+                                //if contidion false
+                                }else{
+                                    //remove last entry from current number and add new entry 
+                                    const newNumber = currentNumber.slice(0,currentNumber.length-1);
+                                    currentNumber = newNumber + buttonName;
+                                }
+                                break;
+                                case buttonName === "C":
+                                currentNumber = "0";
+                                operatorFlag = false;
+                                decimalFlag= false;
+                                break;
+                                case buttonName === "=":
+                                currentNumber = eval(currentNumber);
+                                operatorFlag = false;
+                                decimalFlag= true;
+                                break;
+                                case buttonName === ".":
+                                if(!this.state.decimalFlag){
+                                    currentNumber += buttonName;
+                                    decimalFlag = true;
+                                }
+                        } 
+                        this.setState({decimalFlag: decimalFlag});        
+                        this.setState({currentNumber:currentNumber});
+                        this.setState({operatorFlag: operatorFlag});
+                }
+
+            render() { 
+                return (
+                    <div id = "calculator-body">
+
+                        <div id="calcOutput" >
+                            <Screen currentNumber = {this.state.currentNumber}/>
+                        </div>
+
+                        <div id = "calculator">
+                            <Button id = "clear" name = "C" handleClick = {this.handleClick} className = {"btn btn-danger"}/>
+                            <Button id = "multiply" name = "*" handleClick = {this.handleClick} className = {"btn btn-info"}/>
+                            <Button id = "divide" name = "/" handleClick = {this.handleClick} className = {"btn btn-info"}/>
+                            <Button id = "add" name = "+" handleClick = {this.handleClick} className = {"btn btn-info"}/>
+
+                            <Button id = "seven" name = "7" handleClick = {this.handleClick} className = {"btn btn-info"}/>
+                            <Button id = "eight" name = "8" handleClick = {this.handleClick} className = {"btn btn-info"}/>
+                            <Button id = "nine" name = "9" handleClick = {this.handleClick} className = {"btn btn-info"}/>
+                            <Button id = "subtract" name = "-" handleClick = {this.handleClick} className = {"btn btn-info"}/>
+
+                            <Button id = "four" name = "4" handleClick = {this.handleClick} className = {"btn btn-info"}/>
+                            <Button id = "five" name = "5" handleClick = {this.handleClick} className = {"btn btn-info"}/>
+                            <Button id = "six" name = "6" handleClick = {this.handleClick} className = {"btn btn-info"}/>
+                            <Button id = "decimal" name = "." handleClick = {this.handleClick} className = {"btn btn-info"}/>
+                            <Button id = "one" name = "1" handleClick = {this.handleClick} className = {"btn btn-info"}/>
+                            <Button id = "two" name = "2" handleClick = {this.handleClick} className = {"btn btn-info"}/>
+                            <Button id = "three" name = "3" handleClick = {this.handleClick} className = {"btn btn-info"}/>         
+                            <Button id = "equals" name = "=" handleClick = {this.handleClick} className = {"btn btn-info btn-high"}/>
+                            <Button id = "zero" name = "0" handleClick = {this.handleClick} className = {"btn btn-info btn-wide"}/>   
+                        </div>
+                        
+                    </div>
+                    
+
+                ); 
+            } 
+        } 
+
+        class Screen extends React.Component {
+            render(){
+                return(
+                    <div id = "display">
+                        {this.props.currentNumber}
+                    </div>
+                )
+            }
         }
 
-
-
-    render() { 
-        return (
-            <div id = "calculator-body">
-                <div id="calcOutput" >
-                    <Screen currentNumber = {this.state.currentNumber}/>
-                </div>
-                <div id = "calculator">
-                    <Button id = "clear" name = "C" handleClick = {this.handleClick} clas = {"btn btn-danger"}/>
-                    <Button id = "multiply" name = "*" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-                    <Button id = "divide" name = "/" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-                    <Button id = "add" name = "+" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-
-                    <Button id = "seven" name = "7" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-                    <Button id = "eight" name = "8" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-                    <Button id = "nine" name = "9" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-                    <Button id = "subtract" name = "-" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-
-                    <Button id = "four" name = "4" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-                    <Button id = "five" name = "5" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-                    <Button id = "six" name = "6" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-                    <Button id = "decimal" name = "." handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-                    <Button id = "one" name = "1" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-                    <Button id = "two" name = "2" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
-                    <Button id = "three" name = "3" handleClick = {this.handleClick} clas = {"btn btn-info"}/>
+        class Button extends React.Component {
+            runParentHandleClick = () => {
+                this.props.handleClick(this.props.name)
+            }
+            render(){
+                return(
+                    <button id = {this.props.id} onClick = {this.runParentHandleClick} className = {this.props.className}>{this.props.name}</button>
+                )
+            }
+        }
+        ReactDOM.render(<Calculator />, document.getElementById('root'));
                     
-                    
-                    
-                    
-                    
-                    <Button id = "equals" name = "=" handleClick = {this.handleClick} clas = {"btn btn-info btn-high"}/>
-                    <Button id = "zero" name = "0" handleClick = {this.handleClick} clas = {"btn btn-info btn-wide"}/>
-                    
-            </div>
-                
-            </div>
-            
+    </script>
 
-        ); 
-    } 
-} 
-
-class Screen extends React.Component {
-    render(){
-        return(
-            <div id = "display">
-                {this.props.currentNumber}
-            </div>
-        )
-    }
-}
-
-class Button extends React.Component {
-    runParentHandleClick = () => {
-        this.props.handleClick(this.props.name)
-    }
-    render(){
-        return(
-            <button id = {this.props.id} onClick = {this.runParentHandleClick} className = {this.props.clas}>{this.props.name}</button>
-        )
-    }
-}
-ReactDOM.render(<Calculator />, document.getElementById('root'));
-            
-      
-          </script>
-          <!--
-            Note: this page is a great way to try React but it's not suitable for production.
-            It slowly compiles JSX with Babel in the browser and uses a large development build of React.
-      
-            Read this section for a production-ready setup with JSX:
-            https://reactjs.org/docs/add-react-to-a-website.html#add-jsx-to-a-project
-      
-            In a larger project, you can use an integrated toolchain that includes JSX instead:
-            https://reactjs.org/docs/create-a-new-react-app.html
-      
-            You can also use React without JSX, in which case you can remove Babel:
-            https://reactjs.org/docs/react-without-jsx.html
-          -->
-        </body>
-        <div id="root">
-                <!-- This element's contents will be replaced with your component. -->
-            </div>
-    <script src="main.js"></script>
+    <div id="root"></div>      
 </body>
 </html>
